@@ -23,8 +23,7 @@ export async function login(formData: FormData) {
   });
 
   if (error) {
-    console.error("Login failed:", error.message);
-    return;
+    redirect("/login?error=invalid_credentials");
   }
 
   redirect("/");

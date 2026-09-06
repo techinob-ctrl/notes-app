@@ -1,10 +1,31 @@
 import { login } from "./actions";
+import SubmitButton from "@/components/submit-button";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function LoginPage() {
+interface LoginPageProps {
+  searchParams: Promise<{ error?: string }>;
+}
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const { error } = await searchParams;
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    redirect("/");
+  }
   return (
     <main className="mx-auto w-full max-w-md px-4 py-10">
       <h1 className="mb-6 text-3xl font-bold">Log in</h1>
-
+      {error === "invalid_credentials" && (
+        <p role="alert" className="mb-4 text-red-600">
+          เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบอีเมลและรหัสผ่าน แล้วลองอีกครั้ง
+        </p>
+      )}
       <form
         action={login}
         className="space-y-4 rounded-lg border border-gray-200 bg-white p-5"
@@ -42,13 +63,11 @@ export default function LoginPage() {
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
           />
         </div>
-
-        <button
-          type="submit"
-          className="w-full rounded-md bg-blue-600 px-4 py-2 font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          Log in
-        </button>
+        <SubmitButton
+          label="Log in"
+          pendingLabel="กำลังเข้าสู่ระบบ…"
+          className="w-full"
+        />
       </form>
     </main>
   );
