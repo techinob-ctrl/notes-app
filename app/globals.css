@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fffaf0;
+  --foreground: #35291f;
+  color-scheme: light;
 }
 
 @theme inline {
@@ -12,15 +13,33 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  line-height: 1.65;
+}
+
+::selection { background: #fed7aa; color: #431407; }
+
+@layer components {
+  .surface { @apply rounded-2xl border-2 border-stone-700 bg-white p-5 sm:p-6; box-shadow: 4px 4px 0 #ead9b8; }
+  .field { @apply w-full rounded-xl border-2 border-stone-300 bg-[#fffdf7] px-3.5 py-3 text-base text-stone-900 placeholder:text-stone-500 read-only:bg-stone-100; }
+  .button { @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-stone-800 px-4 py-2 text-sm font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-50; }
+  .button-primary { @apply bg-orange-400 text-stone-950 hover:bg-orange-500; }
+  .button-secondary { @apply bg-[#fff4cf] text-stone-800 hover:bg-amber-200; }
+}
+
+.cat-cover { box-shadow: 5px 5px 0 #ead9b8; }
+article.surface:nth-child(3n + 1) { background: #fff7df; border-top-color: #ea8b36; }
+article.surface:nth-child(3n + 2) { background: #f4f1eb; border-top-color: #78716c; }
+article.surface:nth-child(3n) { background: #fffdf7; border-top-color: #dca84c; }
+
+:where(a, button, input, textarea):focus-visible {
+  outline: 3px solid #c2410c;
+  outline-offset: 3px;
+}
+textarea { resize: vertical; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
 }

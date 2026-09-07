@@ -1,29 +1,29 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { createNote } from "@/app/actions";
+import { updateNote } from "@/app/actions";
 import SubmitButton from "@/components/submit-button";
+import Link from "next/link";
+
+interface EditNoteFormProps {
+  note: {
+    id: string;
+    title: string;
+    content: string;
+  };
+}
 
 const initialState = {
   success: false,
   message: "",
 };
 
-export default function NoteForm() {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+export default function EditNoteForm({ note }: EditNoteFormProps) {
+  const [title, setTitle] = useState(note.title);
+  const [content, setContent] = useState(note.content);
 
   const [state, formAction, isPending] = useActionState(
-    async (previousState: typeof initialState, formData: FormData) => {
-      const result = await createNote(previousState, formData);
-
-      if (result.success) {
-        setTitle("");
-        setContent("");
-      }
-
-      return result;
-    },
+    updateNote,
     initialState,
   );
 
@@ -32,26 +32,31 @@ export default function NoteForm() {
       action={formAction}
       className="surface space-y-5"
     >
-      <div className="border-b border-slate-100 pb-4">
-        <h2 className="text-lg font-semibold">New note</h2>
-        <p className="mt-1 text-sm text-slate-500">Got a thought? Let it out of the bag.</p>
-      </div>
+      <input type="hidden" name="id" value={note.id} />
+
       <div>
-        <label htmlFor="title" className="mb-1 block font-medium text-gray-900">
+        <label
+          htmlFor="title"
+          className="mb-1 block font-medium text-gray-900"
+        >
           Title
         </label>
+
         <input
           id="title"
           name="title"
           type="text"
-          required
-          maxLength={100}
           value={title}
           onChange={(event) => setTitle(event.target.value)}
           readOnly={isPending}
+          required
+          maxLength={100}
           className="field"
         />
-        <p className="mt-1 text-sm text-gray-500">{title.length}/100</p>
+
+        <p className="mt-1 text-sm text-gray-500">
+          {title.length}/100
+        </p>
       </div>
 
       <div>
@@ -61,17 +66,21 @@ export default function NoteForm() {
         >
           Content
         </label>
+
         <textarea
           id="content"
           name="content"
-          rows={4}
-          maxLength={5000}
           value={content}
           onChange={(event) => setContent(event.target.value)}
           readOnly={isPending}
+          rows={6}
+          maxLength={5000}
           className="field"
         />
-        <p className="mt-1 text-sm text-gray-500">{content.length}/5000</p>
+
+        <p className="mt-1 text-sm text-gray-500">
+          {content.length}/5000
+        </p>
       </div>
 
       <p
@@ -81,7 +90,16 @@ export default function NoteForm() {
         {isPending ? "" : state.message}
       </p>
 
-      <SubmitButton label="+ Add note" pendingLabel="Saving…" className="w-full" />
+      <div className="flex flex-wrap items-center gap-4 border-t border-slate-100 pt-5">
+        <SubmitButton
+          label="Save changes"
+          pendingLabel="Saving…"
+        />
+
+        <Link href="/" className="text-gray-600 underline">
+          Back to notes
+        </Link>
+      </div>
     </form>
   );
 }
