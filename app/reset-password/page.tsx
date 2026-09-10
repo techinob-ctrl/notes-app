@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
-import { signup } from "./actions";
+import { updatePassword } from "./actions";
 import SubmitButton from "@/components/submit-button";
 
 const initialState = {
@@ -10,39 +10,31 @@ const initialState = {
   message: "",
 };
 
-export default function SignupPage() {
-  const [state, formAction, isPending] = useActionState(signup, initialState);
+export default function ResetPasswordPage() {
+  const [state, formAction, isPending] = useActionState(
+    updatePassword,
+    initialState,
+  );
   return (
     <main className="mx-auto flex min-h-svh w-full max-w-md flex-col justify-center px-5 py-12">
       <div className="mb-8 text-center">
         <p className="mb-2 text-sm font-bold text-orange-800">
           Orange and Tabby cat
         </p>
-        <h1 className="text-3xl font-bold">Join the cat club.</h1>
+
+        <h1 className="text-3xl font-bold">Set a new password.</h1>
+
         <p className="mt-3 text-sm text-stone-600">
-          Create an account. Bring your brightest ideas.
+          A fresh password for your cozy corner.
         </p>
       </div>
 
       <form action={formAction} className="surface space-y-5">
         <div>
-          <label htmlFor="email" className="mb-1 block font-medium">
-            Email
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            className="field"
-          />
-        </div>
-
-        <div>
           <label htmlFor="password" className="mb-1 block font-medium">
-            Password
+            New password
           </label>
+
           <input
             id="password"
             name="password"
@@ -50,8 +42,10 @@ export default function SignupPage() {
             autoComplete="new-password"
             minLength={8}
             required
+            readOnly={isPending || state.success}
             className="field"
           />
+
           <p className="mt-1 text-xs text-stone-600">
             Use at least 8 characters.
           </p>
@@ -59,8 +53,9 @@ export default function SignupPage() {
 
         <div>
           <label htmlFor="confirmPassword" className="mb-1 block font-medium">
-            Confirm password
+            Confirm new password
           </label>
+
           <input
             id="confirmPassword"
             name="confirmPassword"
@@ -68,6 +63,7 @@ export default function SignupPage() {
             autoComplete="new-password"
             minLength={8}
             required
+            readOnly={isPending || state.success}
             className="field"
           />
         </div>
@@ -80,21 +76,25 @@ export default function SignupPage() {
         >
           {isPending ? "" : state.message}
         </p>
-        <p className="text-sm text-stone-600">
-          After signing up, check your inbox and open the confirmation link in
-          the same browser and browser profile you used to sign up.
-        </p>
-        <SubmitButton
-          label="Create account"
-          pendingLabel="Creating account…"
-          className="w-full"
-        />
+
+        {!state.success && (
+          <SubmitButton
+            label="Update password"
+            pendingLabel="Updating…"
+            className="w-full"
+          />
+        )}
+
+        {state.success && (
+          <Link href="/" className="button button-primary w-full">
+            Back to notes
+          </Link>
+        )}
       </form>
 
-      <p className="mt-6 text-center text-sm text-stone-600">
-        Already have an account?{" "}
+      <p className="mt-6 text-center text-sm">
         <Link href="/login" className="font-bold text-orange-800 underline">
-          Sign in
+          Back to sign in
         </Link>
       </p>
     </main>

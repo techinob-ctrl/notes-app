@@ -87,6 +87,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             className="field"
           />
         </div>
+        <div className="text-right">
+          <Link
+            href="/forgot-password"
+            className="text-sm font-bold text-orange-800 underline"
+          >
+            Forgot password?
+          </Link>
+        </div>
         <SubmitButton
           label="Sign in"
           pendingLabel="Signing in…"
